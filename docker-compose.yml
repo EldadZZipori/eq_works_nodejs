@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  redis-server:
+    image: 'redis'
+
+  app:
+    links:
+      - redis-server
+    environment:
+      - REDIS_URL=redis://cache
+    build: .
+    ports:
+      - '5555:5555'
+    volumes:
+      - .:/usr/src/app
+      # prevents host/container contamination
+      - /usr/src/app/node_modules
+    env_file: .env
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
